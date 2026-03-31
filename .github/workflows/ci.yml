@@ -1,0 +1,61 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux, x64, day10]
+    steps:
+      - name: Checkout claude-repo
+        uses: actions/checkout@v4
+
+      - name: Checkout opam-repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocaml/opam-repository
+          path: opam-repository
+
+      - name: List packages
+        run: |
+          day10 list \
+            --opam-repository opam-repository \
+            --opam-repository . \
+            --ocaml-version ocaml.5.4.1 \
+            --os-distribution ubuntu --os-family debian --os-version 24.04 \
+            --json packages.json
+
+      - name: Solve packages (dry-run)
+        run: |
+          mkdir -p results
+          day10 health-check \
+            --cache-dir /var/cache/day10 \
+            --opam-repository opam-repository \
+            --opam-repository . \
+            --ocaml-version ocaml.5.4.1 \
+            --os-distribution ubuntu --os-family debian --os-version 24.04 \
+            --json results \
+            --dry-run \
+            @packages.json
+
+      - name: Build packages
+        run: |
+          day10 health-check \
+            --cache-dir /var/cache/day10 \
+            --opam-repository opam-repository \
+            --opam-repository . \
+            --ocaml-version ocaml.5.4.1 \
+            --os-distribution ubuntu --os-family debian --os-version 24.04 \
+            --json results \
+            --fork 64 \
+            @packages.json
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-results
+          path: results/
