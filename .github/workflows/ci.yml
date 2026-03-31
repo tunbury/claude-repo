@@ -22,8 +22,8 @@ jobs:
       - name: Install opam
         run: |
           if ! command -v opam &> /dev/null; then
-            curl -sL https://github.com/ocaml/opam/releases/download/2.5.0/opam-2.5.0-x86_64-linux -o /usr/local/bin/opam
-            chmod +x /usr/local/bin/opam
+            sudo curl -sL https://github.com/ocaml/opam/releases/download/2.5.0/opam-2.5.0-x86_64-linux -o /usr/local/bin/opam
+            sudo chmod +x /usr/local/bin/opam
             opam init --bare --no-setup --disable-sandboxing -y
           fi
 
@@ -37,7 +37,7 @@ jobs:
           fi
           opam install . --deps-only -y
           opam exec -- dune build @install
-          cp _build/install/default/bin/day10 /usr/local/bin/
+          sudo cp _build/install/default/bin/day10 /usr/local/bin/
 
       - name: List packages
         run: |
