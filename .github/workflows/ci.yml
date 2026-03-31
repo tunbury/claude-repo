@@ -19,13 +19,25 @@ jobs:
           repository: ocaml/opam-repository
           path: opam-repository
 
+      - name: Install opam
+        run: |
+          if ! command -v opam &> /dev/null; then
+            curl -sL https://github.com/ocaml/opam/releases/download/2.5.0/opam-2.5.0-x86_64-linux -o /usr/local/bin/opam
+            chmod +x /usr/local/bin/opam
+            opam init --bare --no-setup --disable-sandboxing -y
+          fi
+
       - name: Install day10
         run: |
+          rm -rf /tmp/day10
           git clone https://github.com/mtelvers/day10 /tmp/day10
           cd /tmp/day10
+          if [ ! -d _opam ]; then
+            opam switch create . 5.4.1 -y
+          fi
           opam install . --deps-only -y
-          dune build @install
-          sudo cp _build/install/default/bin/day10 /usr/local/bin/
+          opam exec -- dune build @install
+          cp _build/install/default/bin/day10 /usr/local/bin/
 
       - name: List packages
         run: |
