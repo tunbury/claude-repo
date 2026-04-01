@@ -62,6 +62,67 @@ jobs:
             --fork 64 \
             @packages.json
 
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Build Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          total=0; success=0; failed=0; no_solution=0; dep_failed=0
+          for f in results/*.json; do
+            [ -f "$f" ] || continue
+            total=$((total + 1))
+            s=$(jq -r '.status' "$f")
+            case "$s" in
+              success) success=$((success + 1)) ;;
+              failure) failed=$((failed + 1)) ;;
+              no_solution) no_solution=$((no_solution + 1)) ;;
+              dependency_failed) dep_failed=$((dep_failed + 1)) ;;
+            esac
+          done
+
+          echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Total packages | $total |" >> $GITHUB_STEP_SUMMARY
+          echo "| :white_check_mark: Success | $success |" >> $GITHUB_STEP_SUMMARY
+          echo "| :x: Failed | $failed |" >> $GITHUB_STEP_SUMMARY
+          echo "| :warning: No solution | $no_solution |" >> $GITHUB_STEP_SUMMARY
+          echo "| :fast_forward: Dependency failed | $dep_failed |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$failed" -gt 0 ]; then
+            echo "<details><summary>Failed packages ($failed)</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Package | Log (last 5 lines) |" >> $GITHUB_STEP_SUMMARY
+            echo "|---------|-----|" >> $GITHUB_STEP_SUMMARY
+            for f in results/*.json; do
+              [ -f "$f" ] || continue
+              s=$(jq -r '.status' "$f")
+              if [ "$s" = "failure" ]; then
+                name=$(jq -r '.name' "$f")
+                log=$(jq -r '.log // ""' "$f" | tail -5 | sed 's/|/\\|/g' | tr '\n' ' ')
+                echo "| \`$name\` | \`$log\` |" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "$success" -gt 0 ]; then
+            echo "<details><summary>Successful packages ($success)</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            for f in results/*.json; do
+              [ -f "$f" ] || continue
+              s=$(jq -r '.status' "$f")
+              if [ "$s" = "success" ]; then
+                name=$(jq -r '.name' "$f")
+                echo "- \`$name\`" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
