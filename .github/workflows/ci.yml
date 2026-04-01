@@ -22,6 +22,24 @@ jobs:
           repository: ocaml/opam-repository
           path: opam-repository
 
+      - name: Download previous results
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p previous-results
+          # Find the most recent completed run (excluding current)
+          run_id=$(gh run list --repo ${{ github.repository }} \
+            --branch main --workflow "CI Build" --status completed \
+            --json databaseId --jq '.[0].databaseId // empty')
+          if [ -n "$run_id" ]; then
+            echo "Downloading results from run $run_id"
+            gh run download "$run_id" --repo ${{ github.repository }} \
+              --name build-results --dir previous-results || true
+          else
+            echo "No previous run found"
+          fi
+
       - name: Install day10
         run: |
           sudo curl -sL https://github.com/mtelvers/day10/releases/download/v0.0.1/day10-linux-x86_64 -o /usr/local/bin/day10
@@ -106,6 +124,76 @@ jobs:
             done
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Diff against previous results
+          if ls previous-results/*.json 1>/dev/null 2>&1; then
+            echo "## Changes from previous run" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            newly_fixed=""
+            newly_broken=""
+            newly_added=""
+            newly_removed=""
+
+            # Check current results against previous
+            for f in results/*.json; do
+              [ -f "$f" ] || continue
+              name=$(jq -r '.name' "$f")
+              cur=$(jq -r '.status' "$f")
+              prev_file="previous-results/$(basename "$f")"
+              if [ -f "$prev_file" ]; then
+                prev=$(jq -r '.status' "$prev_file")
+                if [ "$prev" != "success" ] && [ "$cur" = "success" ]; then
+                  newly_fixed="$newly_fixed\n- \`$name\` ($prev -> success)"
+                elif [ "$prev" = "success" ] && [ "$cur" != "success" ]; then
+                  newly_broken="$newly_broken\n- \`$name\` (success -> $cur)"
+                fi
+              else
+                newly_added="$newly_added\n- \`$name\` ($cur)"
+              fi
+            done
+
+            # Check for removed packages
+            for f in previous-results/*.json; do
+              [ -f "$f" ] || continue
+              name=$(jq -r '.name' "$f")
+              cur_file="results/$(basename "$f")"
+              if [ ! -f "$cur_file" ]; then
+                prev=$(jq -r '.status' "$f")
+                newly_removed="$newly_removed\n- \`$name\` (was $prev)"
+              fi
+            done
+
+            has_changes=false
+            if [ -n "$newly_broken" ]; then
+              has_changes=true
+              echo ":rotating_light: **Newly broken:**" >> $GITHUB_STEP_SUMMARY
+              echo -e "$newly_broken" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ -n "$newly_fixed" ]; then
+              has_changes=true
+              echo ":tada: **Newly fixed:**" >> $GITHUB_STEP_SUMMARY
+              echo -e "$newly_fixed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ -n "$newly_added" ]; then
+              has_changes=true
+              echo ":new: **New packages:**" >> $GITHUB_STEP_SUMMARY
+              echo -e "$newly_added" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ -n "$newly_removed" ]; then
+              has_changes=true
+              echo ":wastebasket: **Removed packages:**" >> $GITHUB_STEP_SUMMARY
+              echo -e "$newly_removed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "$has_changes" = false ]; then
+              echo "No changes from previous run." >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
           fi
 
           if [ "$success" -gt 0 ]; then
