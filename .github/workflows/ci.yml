@@ -121,13 +121,14 @@ jobs:
             ($c.dependency_failed // 0) as $dep_failed |
 
             # Diff against previous
+            INDEX(.[]; .name) as $cur_index |
             [.[] | select(prev_status(.name) == "success" and .status != "success")
                  | "- `\(.name)` (success -> \(.status))"] as $broken |
             [.[] | select(prev_status(.name) != null and prev_status(.name) != "success" and .status == "success")
                  | "- `\(.name)` (\(prev_status(.name)) -> success)"] as $fixed |
             [.[] | select(prev_status(.name) == null)
                  | "- `\(.name)` (\(.status))"] as $added |
-            [$prev[0] | to_entries[] | select(.key as $k | any(.[]; .name == $k) | not)
+            [$prev[0] | to_entries[] | select($cur_index[.key] == null)
                  | "- `\(.key)` (was \(.value.status))"] as $removed |
 
             "## Build Results\n",
