@@ -11,10 +11,14 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `imapd.dev` | IMAP4rev2 server implemented in OCaml with EIO |
 | `jpeg.dev` | Pure OCaml JPEG library |
 | `mp3.dev` | Pure OCaml MPEG-1/2/2.5 Audio Layer I/II/III encoder and decoder |
+| `npy.dev` | Read and write NumPy .npy files |
 | `ocaml-slurm.dev` | OCaml client library for Slurm REST API |
 | `octopus_energy.dev` | OCaml library and CLI for Octopus Energy API |
 | `png.dev` | Pure OCaml PNG library |
 | `smtpd.dev` | An SMTP server implemented in OCaml |
+| `solver-service-api.dev` | Cap'n Proto API for the solver service |
+| `solver-service.dev` | Choose package versions to test |
+| `tailwindcss.dev` | TailwindCSS prebuild command line on opam |
 | `wav.dev` | Pure OCaml WAV (RIFF/WAVE) audio file reader and writer |
 | `zarr-blosc.0.1.0` | Blosc codec for Zarr - high-performance meta-compressor |
 | `zarr-eio.0.1.0` | Eio-based async store implementations for Zarr |
