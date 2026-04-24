@@ -12,6 +12,7 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `conf-arrow.1` | Virtual package relying on an Apache Arrow system installation |
 | `conf-gdal.1` | Virtual package relying on a GDAL system installation |
 | `conf-onnxruntime.1` | Virtual package relying on an ONNX Runtime system installation |
+| `dpixel.dev` | Tessera dpixel tool in OCaml |
 | `dream-encoding.dev` | Encoding primitives for Dream |
 | `gdal.0.1.0` | OCaml bindings to GDAL's raster C API |
 | `hilite.dev` | Build time syntax highlighting |
@@ -24,6 +25,7 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `onnxruntime.0.1.0` | OCaml bindings to ONNX Runtime via C shim |
 | `onnxruntime.dev` | OCaml bindings to ONNX Runtime via C shim |
 | `opam-hub.0.1.0` | Gated opam overlay repository server |
+| `pipeline.dev` | Tessera Pipeline in OCaml |
 | `png.dev` | Pure OCaml PNG library |
 | `prometheus-app.dev` | Report metrics for Prometheus using Cohttp and Eio |
 | `prometheus.dev` | Client library for Prometheus monitoring |
