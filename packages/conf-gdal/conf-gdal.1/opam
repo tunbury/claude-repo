@@ -1,0 +1,24 @@
+opam-version: "2.0"
+maintainer: "Mark Elvers <mark@tarides.com>"
+authors: ["GDAL contributors"]
+homepage: "https://gdal.org/"
+license: "MIT"
+build: [["pkg-config" "gdal"]]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libgdal-dev"] {os-family = "debian"}
+  ["libgdal-dev"] {os-family = "ubuntu"}
+  ["gdal-devel"] {os-family = "fedora" | os-family = "rhel" | os-family = "centos"}
+  ["gdal-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gdal-dev"] {os-distribution = "alpine"}
+  ["gdal"] {os-family = "arch" | os-family = "archlinux"}
+  ["sci-libs/gdal"] {os-family = "gentoo"}
+  ["gdal"] {os = "freebsd" | os = "dragonfly" | os = "netbsd" | os = "openbsd"}
+  ["gdal"] {os = "macos" & os-distribution = "homebrew"}
+  ["gdal"] {os = "macos" & os-distribution = "macports"}
+]
+synopsis: "Virtual package relying on a GDAL system installation"
+description:
+  "This package can only install if the GDAL C library is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf

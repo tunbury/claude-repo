@@ -1,12 +1,9 @@
 opam-version: "2.0"
-synopsis: "Virtual package relying on an Apache Arrow system installation"
-description:
-  "This package can only install if the Apache Arrow C++ and Parquet libraries are installed on the system. On Debian and Ubuntu the Apache Arrow APT repository is configured automatically and libarrow-dev and libparquet-dev are installed from it."
-maintainer: ["Mark Elvers <mark@tarides.com>"]
-authors: ["Mark Elvers <mark@tarides.com>"]
-license: "Apache-2.0"
+maintainer: "Mark Elvers <mark@tarides.com>"
+authors: ["Apache Arrow contributors"]
 homepage: "https://arrow.apache.org/"
-bug-reports: "https://github.com/mtelvers/arrow/issues"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Apache-2.0"
 build: [
   ["sh" "-exc" """
     set -eu
@@ -22,21 +19,18 @@ build: [
     pkg-config --exists parquet
   """] {os-family = "debian" | os-family = "ubuntu"}
   ["pkg-config" "--exists" "parquet"]
-    {os != "macos" & os != "win32" & os-family != "debian" & os-family != "ubuntu"}
-  ["sh" "-exc"
-   "export PKG_CONFIG_PATH=\"$(brew --prefix apache-arrow)/lib/pkgconfig:$PKG_CONFIG_PATH\"; pkg-config --exists parquet"]
-    {os = "macos" & os-distribution = "homebrew"}
+    {os-family != "debian" & os-family != "ubuntu"}
 ]
-depends: [
-  "conf-pkg-config" {build}
-]
+depends: ["conf-pkg-config" {build}]
 depexts: [
   ["libarrow-devel" "libparquet-devel"] {os-family = "fedora"}
   ["libarrow-devel" "libparquet-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["apache-arrow-dev"] {os-distribution = "alpine"}
-  ["apache-arrow"] {os-distribution = "homebrew" & os = "macos"}
+  ["arrow"] {os-family = "arch" | os-family = "archlinux"}
   ["apache-arrow"] {os = "freebsd"}
-  ["arrow"] {os-family = "arch"}
+  ["apache-arrow"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Virtual package relying on an Apache Arrow system installation"
+description:
+  "This package can only install if the Apache Arrow C++ and Parquet libraries are installed on the system. On Debian and Ubuntu the Apache Arrow APT repository is configured automatically and libarrow-dev and libparquet-dev are installed from it."
 flags: conf
-x-maintenance-intent: ["(latest)"]
