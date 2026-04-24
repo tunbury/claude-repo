@@ -8,6 +8,7 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 |---------|-------------|
 | `braid.0.1.0` | Build status tracker for opam overlay repositories |
 | `braid.dev` | Build status tracker for opam overlay repositories |
+| `conf-arrow.1` | Virtual package relying on an Apache Arrow system installation |
 | `dream-encoding.dev` | Encoding primitives for Dream |
 | `hilite.dev` | Build time syntax highlighting |
 | `imapd.dev` | IMAP4rev2 server implemented in OCaml with EIO |
@@ -18,6 +19,8 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `octopus_energy.dev` | OCaml library and CLI for Octopus Energy API |
 | `opam-hub.0.1.0` | Gated opam overlay repository server |
 | `png.dev` | Pure OCaml PNG library |
+| `prometheus-app.dev` | Client library for Prometheus monitoring |
+| `prometheus.dev` | Client library for Prometheus monitoring |
 | `repo_tool.dev` | Generate opam repository from git repositories |
 | `smtpd.dev` | An SMTP server implemented in OCaml |
 | `solver-service-api.dev` | Cap'n Proto API for the solver service |

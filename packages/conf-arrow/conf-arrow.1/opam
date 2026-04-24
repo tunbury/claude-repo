@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on an Apache Arrow system installation"
+description:
+  "This package can only install if the Apache Arrow C++ and Parquet libraries are installed on the system. On Debian and Ubuntu the Apache Arrow APT repository is configured automatically and libarrow-dev and libparquet-dev are installed from it."
+maintainer: ["Mark Elvers <mark@tarides.com>"]
+authors: ["Mark Elvers <mark@tarides.com>"]
+license: "Apache-2.0"
+homepage: "https://arrow.apache.org/"
+bug-reports: "https://github.com/mtelvers/arrow/issues"
+build: [
+  ["sh" "-exc" """
+    set -eu
+    sudo apt-get install -y -V ca-certificates lsb-release wget
+    distro=$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')
+    codename=$(lsb_release --codename --short)
+    deb=apache-arrow-apt-source-latest-${codename}.deb
+    wget -q https://packages.apache.org/artifactory/arrow/${distro}/${deb}
+    sudo apt-get install -y -V ./${deb}
+    rm -f ${deb}
+    sudo apt-get update
+    sudo apt-get install -y -V libarrow-dev libparquet-dev
+    pkg-config --exists parquet
+  """] {os-family = "debian" | os-family = "ubuntu"}
+  ["pkg-config" "--exists" "parquet"]
+    {os != "macos" & os != "win32" & os-family != "debian" & os-family != "ubuntu"}
+  ["sh" "-exc"
+   "export PKG_CONFIG_PATH=\"$(brew --prefix apache-arrow)/lib/pkgconfig:$PKG_CONFIG_PATH\"; pkg-config --exists parquet"]
+    {os = "macos" & os-distribution = "homebrew"}
+]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libarrow-devel" "libparquet-devel"] {os-family = "fedora"}
+  ["libarrow-devel" "libparquet-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["apache-arrow-dev"] {os-distribution = "alpine"}
+  ["apache-arrow"] {os-distribution = "homebrew" & os = "macos"}
+  ["apache-arrow"] {os = "freebsd"}
+  ["arrow"] {os-family = "arch"}
+]
+flags: conf
+x-maintenance-intent: ["(latest)"]
