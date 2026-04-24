@@ -6,6 +6,7 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 
 | Package | Description |
 |---------|-------------|
+| `arrow.dev` | Bindings for Apache Arrow and Parquet |
 | `braid.0.1.0` | Build status tracker for opam overlay repositories |
 | `braid.dev` | Build status tracker for opam overlay repositories |
 | `conf-arrow.1` | Virtual package relying on an Apache Arrow system installation |
