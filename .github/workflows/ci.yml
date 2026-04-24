@@ -53,8 +53,8 @@ jobs:
       - name: List packages
         run: |
           day10 list \
-            --opam-repository opam-repository \
             --opam-repository . \
+            --opam-repository opam-repository \
             --ocaml-version ocaml.5.4.1 \
             --os-distribution debian --os-family debian --os-version 13 \
             --json packages.json
@@ -64,8 +64,8 @@ jobs:
           mkdir -p results
           day10 health-check \
             --cache-dir /var/cache/day10 \
-            --opam-repository opam-repository \
             --opam-repository . \
+            --opam-repository opam-repository \
             --ocaml-version ocaml.5.4.1 \
             --os-distribution debian --os-family debian --os-version 13 \
             --json results \
@@ -83,8 +83,8 @@ jobs:
         run: |
           day10 health-check \
             --cache-dir /var/cache/day10 \
-            --opam-repository opam-repository \
             --opam-repository . \
+            --opam-repository opam-repository \
             --ocaml-version ocaml.5.4.1 \
             --os-distribution debian --os-family debian --os-version 13 \
             --json results \
