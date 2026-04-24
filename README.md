@@ -13,7 +13,6 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `conf-gdal.1` | Virtual package relying on a GDAL system installation |
 | `conf-onnxruntime.1` | Virtual package relying on an ONNX Runtime system installation |
 | `day10-tui.dev` | Terminal UI for browsing CI build results from GitHub Actions |
-| `dpixel.dev` | Tessera dpixel tool in OCaml |
 | `dream-encoding.dev` | Encoding primitives for Dream |
 | `embeddings-size.0.1.0` | synopsis: |
 | `gdal.0.1.0` | OCaml bindings to GDAL's raster C API |
@@ -27,7 +26,6 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `onnxruntime.0.1.0` | OCaml bindings to ONNX Runtime via C shim |
 | `onnxruntime.dev` | OCaml bindings to ONNX Runtime via C shim |
 | `opam-hub.0.1.0` | Gated opam overlay repository server |
-| `pipeline.dev` | Tessera Pipeline in OCaml |
 | `png.dev` | Pure OCaml PNG library |
 | `prometheus-app.dev` | Report metrics for Prometheus using Cohttp and Eio |
 | `prometheus.dev` | Client library for Prometheus monitoring |
@@ -39,6 +37,8 @@ A test opam overlay repository for use with [braid](https://github.com/mtelvers/
 | `stac_client.dev` | OCaml STAC API client with Planetary Computer signing |
 | `stac_server.dev` | GeoTessera STAC API server and sync tool |
 | `tailwindcss.dev` | TailwindCSS prebuild command line on opam |
+| `tessera-dpixel.dev` | Tessera dpixel tool in OCaml |
+| `tessera-pipeline.dev` | Tessera Pipeline in OCaml |
 | `tiff.dev` | Pure OCaml TIFF/GeoTIFF library |
 | `wav.dev` | Pure OCaml WAV (RIFF/WAVE) audio file reader and writer |
 | `zarr-blosc.0.1.0` | Blosc codec for Zarr - high-performance meta-compressor |
